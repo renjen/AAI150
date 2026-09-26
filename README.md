@@ -1,9 +1,60 @@
 # AAI150
 
-https://archive.ics.uci.edu/dataset/186/wine+quality 
+Dataset: https://archive.ics.uci.edu/dataset/186/wine+quality
 
+We're predicting if a wine is good (quality 7 or higher) or not good based on its chemical stuff, so it's a classification problem.
 
+## What's in here
 
+- `data/` has the original red and white wine csvs from UCI, plus the cleaned files:
+  - `wine_clean.csv` is the full cleaned data, use this for EDA
+  - `train.csv` and `test.csv` are the 80/20 split, use these for the models
+- `notebooks/01_data_cleaning.ipynb` is the cleaning notebook (Person A)
+- `requirements.txt` has the packages we need
+
+## Setup
+
+You need Python (3.10+) and Git installed. The data's already in the repo so you don't have to download anything.
+
+Clone it:
+
+```
+git clone https://github.com/renjen/AAI150.git
+cd AAI150
+```
+
+Make a virtual environment and turn it on.
+
+Mac:
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Windows:
+```
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+You should see `(.venv)` in your terminal once it's on. You have to run the activate line again whenever you open a new terminal.
+
+Install the packages:
+
+```
+pip install -r requirements.txt
+```
+
+To open the notebooks in VS Code, get the Python and Jupyter extensions, open a notebook, hit "Select Kernel" in the top right and pick `.venv`. Or you can just run `jupyter notebook` and use it in the browser.
+
+To make sure it all works, open `01_data_cleaning.ipynb` and do Run All. It should run with no errors and remake the cleaned csvs in `data/`.
+
+## Git workflow
+
+- `git pull` before you start working so you have the latest stuff
+- make your own branch, like `git checkout -b person-b-eda`
+- commit your work and push your branch (`git push -u origin person-b-eda`)
+- open a pull request on GitHub and have someone else review it before it goes into main
 
 How the work is split up: 
 
