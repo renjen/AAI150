@@ -1,6 +1,7 @@
 # AAI150
 
 Dataset: https://archive.ics.uci.edu/dataset/186/wine+quality
+ # Modeling Wine Quality Using Physicochemical Attributes
 
 We're predicting if a wine is good (quality 7 or higher) or not good based on its chemical stuff, so it's a classification problem.
 
