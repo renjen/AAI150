@@ -9,7 +9,7 @@ Owners follow the work split in the README. Intro and Conclusion are written tog
 - [ ] Title page
 - [ ] 1. Introduction (everyone)
 - [x] 2. Data Cleaning/Preparation (Person A), draft in `02_data_cleaning.md`
-- [ ] 3. Exploratory Data Analysis (Person B)
+- [x] 3. Exploratory Data Analysis (Person B), draft in `03_eda.md`
 - [ ] 4. Model Selection (Person C)
 - [ ] 5. Model Analysis (Person C)
 - [ ] 6. Conclusion and Recommendations (everyone)
