@@ -10,8 +10,8 @@ Owners follow the work split in the README. Intro and Conclusion are written tog
 - [ ] 1. Introduction (everyone)
 - [x] 2. Data Cleaning/Preparation (Person A), draft in `02_data_cleaning.md`
 - [x] 3. Exploratory Data Analysis (Person B), draft in `03_eda.md`
-- [ ] 4. Model Selection (Person C)
-- [ ] 5. Model Analysis (Person C)
+- [x] 4. Model Selection (Anthony Candelas), draft in `04_model_selection.md`
+- [x] 5. Model Analysis (Anthony Candelas), draft in `05_model_analysis.md`
 - [ ] 6. Conclusion and Recommendations (everyone)
 - [ ] References
 - [ ] Appendix: notebook output
@@ -69,7 +69,7 @@ Use `data/wine_clean.csv`.
   - Any multicollinearity to worry about
   - Class imbalance reminder
 
-## 4. Model Selection (Person C)
+## 4. Model Selection (Anthony Candelas)
 
 Use `data/train.csv` and `data/test.csv`. Drop `quality` and `type` from the inputs.
 
@@ -84,7 +84,7 @@ Use `data/train.csv` and `data/test.csv`. Drop `quality` and `type` from the inp
 - Comparison table of all models
 - Which model was picked and the statistical reasoning behind it
 
-## 5. Model Analysis (Person C)
+## 5. Model Analysis (Anthony Candelas)
 
 - Final model performance on the test set
 - Confusion matrix and what the errors mean (good wines missed vs. average wines labeled good)
@@ -110,7 +110,7 @@ Write this for a business reader.
 
 ## References
 
-- Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Modeling wine preferences by data mining from physicochemical properties. *Decision Support Systems, 47*(4), 547–553.
+- Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Modeling wine preferences by data mining from physicochemical properties. *Decision Support Systems, 47*(4), 547-553.
 - UCI Machine Learning Repository: Wine Quality. https://archive.ics.uci.edu/dataset/186/wine+quality
 - Any libraries or other sources we cite (pandas, scikit-learn, etc.)
 
@@ -132,6 +132,6 @@ File: `Final-Project-Presentation-Team-X.mp4`, 8 to 10 minutes, no longer than 1
   1. The problem and why it matters
   2. The data and how we cleaned it (Person A)
   3. What the data showed (Person B)
-  4. The model and how well it works (Person C)
+  4. The model and how well it works (Anthony Candelas)
   5. Recommendations
   6. Team contributions slide (required): each member's name and what they did
