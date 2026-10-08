@@ -70,15 +70,15 @@ Figure 3 illustrates the Receiver Operating Characteristic (ROC) curve alongside
 ### Key Diagnostic Curve Observations:
 - **ROC Trajectory (AUC = 0.8738):** The ROC curve ascends steeply in the low false positive rate region (0.00 to 0.20), reaching over 70% recall while keeping the false positive rate below 15%. This demonstrates strong discriminative power across wide operating conditions.
 - **Precision-Recall Dynamics (PR-AUC = 0.6230):** In imbalanced domains, the PR curve provides an informative assessment of minority class precision. The horizontal reference line at 0.1898 represents a random guess baseline. The Random Forest model maintains a substantial elevation above this baseline across the entire recall spectrum.
-- **Adjustable Decision Thresholds:** The default 0.50 probability threshold yields 54.10% precision at 71.78% recall. Depending on business strategy:
-  - *Brand Protection Policy (High Precision):* Elevating the classification threshold to 0.65 increases precision to over 70%, ensuring only top-tier lots receive premium certification.
-  - *Volume Harvesting Policy (High Recall):* Lowering the threshold to 0.40 captures over 85% of high-quality wines for secondary expert review.
+- **Adjustable Decision Thresholds:** The default 0.50 probability threshold yields 54.10% precision at 71.78% recall (F1 = 0.6170). Depending on commercial strategy, the operating threshold can be adjusted along the precision-recall trade-off continuum:
+  - *Brand Protection Policy (High Precision):* Elevating the classification threshold to 0.65 increases precision to 62.86% (at 43.56% recall), while setting the threshold to 0.70 yields 68.93% precision (at 35.15% recall) and 0.75 yields 73.68% precision (at 27.72% recall), ensuring that only high-confidence lots receive premium bottling.
+  - *Volume Harvesting Policy (High Recall):* Lowering the threshold to 0.40 captures 80.69% of true high-quality wines (at 45.79% precision), while setting the threshold to 0.35 captures 85.15% of high-quality wines (at 41.95% precision) for secondary sommelier auditing.
 
 Figure 6 displays the probability calibration curve (reliability diagram).
 
 ![Figure 6: Probability Calibration Reliability Curve](figures/figure_06_calibration_curve.png)
 
-The calibration curve closely tracks the diagonal 45-degree line, confirming that predicted probabilities align with observed empirical frequencies. The test Brier score of 0.1225 confirms solid probability calibration, allowing winemakers to treat model scores as meaningful risk probabilities rather than uncalibrated heuristic scores.
+The calibration curve illustrates a characteristic upward probability shift: across the lower and middle probability intervals, predicted probabilities exceed empirical event frequencies (for example, wines assigned a model probability of ~0.45 exhibit an actual high-quality rate of 20.45%). This probability distortion is a direct mathematical consequence of cost-sensitive learning (`class_weight='balanced'`), which artificially scales minority class misclassification loss by a factor of 2.64 during tree splitting. While this reweighting significantly improves minority class discrimination and decision-boundary separability (achieving a test ROC-AUC of 0.8738 and F1-score of 0.6170), raw model probabilities should be interpreted as relative risk indices rather than uncalibrated Bayesian posterior probabilities unless post-hoc calibration (such as Platt scaling or isotonic regression) is applied. Despite this systematic shift, the overall test Brier score loss is 0.1225 (substantially outperforming a naive prevalence baseline of 0.1538).
 
 ---
 
@@ -181,9 +181,9 @@ While the Random Forest classifier demonstrates strong empirical performance, pr
 The model evaluation demonstrates that laboratory physicochemical measurements can accurately identify high-quality wines (ROC-AUC = 0.8738, F1 = 0.6170). 
 
 For winemakers and commercial distributors, we recommend:
-1. **Automated Screening:** Deploy the model as an automated batch screening tool before formal sensory evaluation, reducing expert panel workload while flagging high-potential lots.
+1. **Automated Screening:** Deploy the model as an automated batch screening tool before formal sensory evaluation, triaging production volume while flagging high-potential lots.
 2. **Physicochemical Monitoring:** Actively monitor and manage alcohol concentration, volatile acidity levels, and chloride balance during fermentation and blending.
-3. **Threshold Calibration:** Adjust operational decision thresholds based on business priorities, using conservative thresholds (0.65) for premium reserve bottling and sensitive thresholds (0.40) for comprehensive quality audits.
+3. **Threshold Calibration:** Adjust operational decision thresholds based on business priorities, using conservative thresholds (0.70 to 0.75) for premium reserve bottling and sensitive thresholds (0.35 to 0.40) for comprehensive quality audits.
 
 ---
 
@@ -193,9 +193,9 @@ This discussion summarizes the empirical findings, enological mechanics, and ope
 
 ### 1. Synthesis of Predictive Performance and Architectural Justification
 Across 10-fold stratified cross-validation and independent out-of-sample testing on 1,064 unseen wines, the bagging Random Forest classifier demonstrated consistent superiority over baseline and comparative architectures:
-- **Baseline Outperformance:** The paired Student's t-test confirmed a statistically significant improvement over Logistic Regression ($t = 3.3840, p = 0.008076$). Linear models exhibited high recall ($78.69\%$) but poor precision ($40.21\%$), generating an unacceptable rate of false positives.
+- **Baseline Outperformance:** Both the standard paired Student's t-test ($t = 3.3840, p = 0.0081$) and the Nadeau and Bengio (2003) corrected resampled t-test ($t = 2.3290, p = 0.0448$) confirmed a statistically significant improvement over Logistic Regression at $\alpha = 0.05$. Linear models exhibited high recall ($78.69\%$) but poor precision ($40.21\%$), generating an unacceptable rate of false positives.
 - **Ensemble Robustness:** Constrained tree depth (`max_depth = 15`) and leaf regularization (`min_samples_leaf = 2`) effectively mitigated overfitting, evidenced by test metrics ($83.08\%$ accuracy, $0.8738$ ROC-AUC, $0.6170$ F1-score) closely matching 10-fold cross-validation estimates ($80.50\%$ accuracy, $0.8492$ ROC-AUC, $0.5599$ F1-score).
-- **Literature Benchmark Comparison:** The final model exceeds published benchmarks established by Cortez et al. (2009), whose Support Vector Machines achieved ROC-AUC scores between $0.82$ and $0.85$. Our model achieves an overall test ROC-AUC of $0.8738$ and a red wine subgroup ROC-AUC of $0.9307$.
+- **Literature Benchmark Context:** Cortez et al. (2009) originally modeled wine quality as a continuous regression task on the 0 to 10 scale, evaluating support vector machines via Mean Absolute Deviation (MAD) and Regression Error Characteristic (REC) curves. Because this investigation reframes the task as an operational binary classification problem (quality score 7 or higher vs. 6 or lower), direct numerical comparison to the original regression error is not applicable; however, our Random Forest classifier establishes a high-performance enological classification benchmark, achieving a test ROC-AUC of $0.8738$ and a red wine subgroup ROC-AUC of $0.9307$.
 
 ### 2. Physicochemical Quality Mechanisms
 Feature importance evaluations across both in-sample Gini impurity and out-of-sample permutation testing reveal three primary enological mechanisms:
@@ -213,10 +213,10 @@ Disaggregating model performance revealed distinct predictive dynamics:
 Extensive diagnostic testing demonstrated that the model operates at the empirical performance ceiling of this dataset:
 - **Threshold Sensitivity:** Scanning decision thresholds from $0.30$ to $0.74$ demonstrated that the default $0.50$ cutoff ($F1 = 0.6170$) is within $0.0025$ of the empirical maximum ($F1 = 0.6195$ at threshold $0.52$).
 - **Interaction Ratios:** Testing domain-engineered chemical interaction ratios (such as free-to-total SO2 ratio, total acidity, and alcohol-to-density ratio) did not improve cross-validation performance ($F1 = 0.5587$ vs. $0.5599$ baseline), confirming that tree-based algorithms natively partition non-linear interactions without redundant synthetic features.
-- **Irreducible Palate Variance:** The remaining test classification error ($16.92\%$) reflects subjective variance inherent to human expert tasting panels (median scores from sensory evaluations) rather than systematic algorithmic deficiency.
+- **Irreducible Sensory Variance:** The remaining test classification error ($16.92\%$) likely reflects a combination of subtle non-linear chemical dynamics and inherent sensory noise from human expert evaluation (which relies on subjective palate ratings across multi-taster panels), rather than simple algorithmic underfitting.
 
 ### 5. Strategic Industry Integration
 For commercial wine producers, distributors, and quality assurance laboratories, we recommend a three-tiered operational deployment:
 1. **Tier 1 (Automated Pre-Screening):** Run laboratory chemical measurements through the model immediately post-fermentation to triage production batches into standard table wine vs. potential reserve quality.
-2. **Tier 2 (Risk-Adjusted Decision Thresholds):** Calibrate the operating threshold to match commercial objectives: use a high-precision threshold ($0.65$) for premium reserve bottling to protect brand reputation, and a high-recall threshold ($0.40$) for bulk screening to capture all possible premium lots.
-3. **Tier 3 (Targeted Expert Sensory Flights):** Reserve high-cost human sommelier panels specifically for lots flagged by the model as borderline or high-probability premium, reducing expert tasting workload by over $70\%$.
+2. **Tier 2 (Risk-Adjusted Decision Thresholds):** Calibrate the operating threshold to match commercial objectives: use a high-precision threshold ($\ge 0.70$) for premium reserve bottling to protect brand reputation, and a high-recall threshold ($\le 0.40$) for bulk screening to capture high-potential lots.
+3. **Tier 3 (Targeted Expert Sensory Flights):** Reserve high-cost human sommelier panels specifically for lots flagged by the model as borderline or high-probability premium. Because only $25.19\%$ of test batches are flagged for premium evaluation under the default threshold ($268$ of $1,064$ wines), this triage protocol could theoretically reduce routine tasting volume by approximately $75\%$, allowing winemakers to focus palate evaluations where they add the greatest economic value.

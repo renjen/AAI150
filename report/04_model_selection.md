@@ -97,12 +97,16 @@ To verify that Random Forest's superior performance was statistically meaningful
 
 | Comparison | Mean Fold F1 Difference | t-Statistic | p-Value | Statistical Decision (alpha = 0.05) |
 |---|---|---|---|---|
-| **Random Forest vs. Logistic Regression** | +0.0283 | 3.3840 | **0.008076** | **Statistically Significant (p < 0.01)** |
-| **Random Forest vs. HistGradientBoosting** | +0.0126 | 1.4398 | 0.183783 | Not Significant at alpha = 0.05 |
+**Table 2.** Statistical Significance Testing on 10-Fold Cross-Validation F1-Scores
+
+| Comparison | Mean F1 Diff | Standard Paired t (p-value) | Nadeau & Bengio Corrected t (p-value) | Statistical Decision (alpha = 0.05) |
+|---|---|---|---|---|
+| **Random Forest vs. Logistic Regression** | +0.0283 | t = 3.3840 (**p = 0.0081**) | t = 2.3290 (**p = 0.0448**) | **Statistically Significant (p < 0.05)** |
+| **Random Forest vs. HistGradientBoosting** | +0.0126 | t = 1.4398 (p = 0.1838) | t = 0.9908 (p = 0.3477) | Not Significant at alpha = 0.05 |
 
 ### Statistical Findings:
-1. **Confirmation over Linear Baseline:** The paired t-test between Random Forest and Logistic Regression yields $t = 3.3840$ with $p = 0.008076$. Because $p < 0.01$, we reject the null hypothesis of equal performance at the 99% confidence level. Random Forest provides a statistically significant improvement over linear modeling.
-2. **Ensemble Comparison:** The paired t-test between Random Forest and HistGradientBoosting yields $t = 1.4398$ with $p = 0.1838$. While the difference between the two ensemble architectures does not achieve significance at $\alpha = 0.05$, Random Forest consistently exhibits a higher mean F1-score (+0.0126), higher ROC-AUC (+0.0106), higher PR-AUC (+0.0173), and superior precision (+0.0129).
+1. **Confirmation over Linear Baseline:** The standard paired t-test between Random Forest and Logistic Regression yields $t = 3.3840$ ($p = 0.0081$). Because standard paired tests on cross-validation folds can underestimate variance due to overlapping training sets, we also applied the Nadeau and Bengio (2003) corrected resampled t-test, which incorporates the variance correction factor $(1/k + n_{\text{test}}/n_{\text{train}} = 1/10 + 1/9 \approx 0.2111)$. Under this conservative test, the comparison remains statistically significant ($t = 2.3290, p = 0.0448 < 0.05$). We reject the null hypothesis of equal performance at the 95% confidence level, demonstrating that Random Forest provides a statistically significant improvement over linear modeling.
+2. **Ensemble Comparison:** The paired t-test between Random Forest and HistGradientBoosting yields $t = 1.4398$ ($p = 0.1838$; Nadeau & Bengio corrected $t = 0.9908, p = 0.3477$). While the difference between the two ensemble architectures does not achieve statistical significance at $\alpha = 0.05$, Random Forest consistently exhibits a higher mean F1-score (+0.0126), higher ROC-AUC (+0.0106), higher PR-AUC (+0.0173), and superior precision (+0.0129).
 
 ---
 
@@ -129,10 +133,10 @@ A grid search was executed over structural hyperparameter combinations on the tr
 
 ## 4.9 Final Model Selection
 
-Based on the empirical evidence, statistical hypothesis testing, and hyperparameter sensitivity analysis, the **Random Forest Classifier** (`n_estimators = 300, max_depth = 15, min_samples_split = 4, min_samples_leaf = 2, class_weight = 'balanced'`) is selected as the final production model. It provides:
-1. Statistically proven superiority over linear baselines ($p = 0.0081$).
+Based on empirical validation, statistical hypothesis testing, and hyperparameter sensitivity analysis, the **Random Forest Classifier** (`n_estimators = 300, max_depth = 15, min_samples_split = 4, min_samples_leaf = 2, class_weight = 'balanced'`) is selected as the final production model. It provides:
+1. Statistically significant outperformance over linear baselines ($p = 0.0081$ uncorrected, $p = 0.0448$ Nadeau & Bengio corrected).
 2. The highest validation F1-score (0.5599), ROC-AUC (0.8492), and PR-AUC (0.5747).
 3. Inherent invariance to monotonic transformations and extreme outliers.
-4. Robust probability calibration suitable for decision threshold adjustment in commercial winemaking applications.
+4. Strong rank-order discrimination suitable for decision threshold adjustment in commercial winemaking applications.
 
 Section 5 presents the complete out-of-sample evaluation and diagnostic analysis of this selected model on the held-out test dataset.
