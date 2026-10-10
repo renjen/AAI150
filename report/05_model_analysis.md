@@ -19,7 +19,7 @@ Table 8 summarizes the final performance metrics evaluated on the 1,064 held-out
 | **F1-Score** | **0.6170** | Robust harmonic balance between precision and sensitivity |
 | **ROC-AUC** | **0.8738** | Strong global discriminability across all operating thresholds |
 | **PR-AUC (Average Precision)** | **0.6230** | Substantial minority-class enrichment (+43.32% over 18.98% baseline) |
-| **Brier Score Loss** | **0.1225** | Low quadratic probability error reflecting solid calibration |
+| **Brier Score Loss** | **0.1225** | Lower than the 0.1538 baseline of always predicting the 19% base rate; see the calibration note below |
 
 Table 9 presents the detailed classification report for both target classes.
 
@@ -78,7 +78,7 @@ Figure 10 displays the probability calibration curve (reliability diagram).
 
 ![Figure 10: Probability Calibration Reliability Curve](figures/figure_06_calibration_curve.png)
 
-The calibration curve illustrates a characteristic upward probability shift: across the lower and middle probability intervals, predicted probabilities exceed empirical event frequencies (for example, wines assigned a model probability of ~0.45 exhibit an actual high-quality rate of 20.45%). This probability distortion is a direct mathematical consequence of cost-sensitive learning (`class_weight='balanced'`), which artificially scales minority class misclassification loss by a factor of 2.64 during tree splitting. While this reweighting significantly improves minority class discrimination and decision-boundary separability (achieving a test ROC-AUC of 0.8738 and F1-score of 0.6170), raw model probabilities should be interpreted as relative risk indices rather than uncalibrated Bayesian posterior probabilities unless post-hoc calibration (such as Platt scaling or isotonic regression) is applied. Despite this systematic shift, the overall test Brier score loss is 0.1225 (substantially outperforming a naive prevalence baseline of 0.1538).
+The calibration curve illustrates a characteristic upward probability shift: across the lower and middle probability intervals, predicted probabilities exceed empirical event frequencies (for example, wines assigned a model probability of ~0.45 exhibit an actual high-quality rate of 20.45%). This probability distortion is a direct mathematical consequence of cost-sensitive learning (`class_weight='balanced'`), which artificially scales minority class misclassification loss by a factor of 2.64 during tree splitting. While this reweighting significantly improves minority class discrimination and decision-boundary separability (achieving a test ROC-AUC of 0.8738 and F1-score of 0.6170), raw model probabilities should be interpreted as relative risk indices rather than calibrated probabilities unless post-hoc calibration (such as Platt scaling or isotonic regression) is applied. Despite this systematic shift, the overall test Brier score loss is 0.1225 (substantially outperforming a naive prevalence baseline of 0.1538).
 
 ---
 
@@ -173,50 +173,3 @@ While the Random Forest classifier demonstrates strong empirical performance, pr
    - Oak barrel maturation duration and toast profiles.
    - Phenolic and anthocyanin compounds (tannins, color pigments).
    - Brand equity, packaging, and retail distribution channels.
-
----
-
-## Business Recommendations
-
-The model evaluation demonstrates that laboratory physicochemical measurements can accurately identify high-quality wines (ROC-AUC = 0.8738, F1 = 0.6170). 
-
-For winemakers and commercial distributors, we recommend:
-1. **Automated Screening:** Deploy the model as an automated batch screening tool before formal sensory evaluation, triaging production volume while flagging high-potential lots.
-2. **Physicochemical Monitoring:** Actively monitor and manage alcohol concentration, volatile acidity levels, and chloride balance during fermentation and blending.
-3. **Threshold Calibration:** Adjust operational decision thresholds based on business priorities, using conservative thresholds (0.70 to 0.75) for premium reserve bottling and sensitive thresholds (0.35 to 0.40) for comprehensive quality audits.
-
----
-
-## Discussion
-
-This discussion summarizes the empirical findings, enological mechanics, and operational implications derived from the complete modeling lifecycle (Sections 4 and 5).
-
-### Model Performance and Architecture
-Across 10-fold stratified cross-validation and independent out-of-sample testing on 1,064 unseen wines, the bagging Random Forest classifier demonstrated consistent superiority over baseline and comparative architectures:
-- **Baseline Outperformance:** Both the standard paired Student's t-test ($t = 3.3840, p = 0.0081$) and the Nadeau and Bengio (2003) corrected resampled t-test ($t = 2.3290, p = 0.0448$) confirmed a statistically significant improvement over Logistic Regression at $\alpha = 0.05$. Linear models exhibited high recall ($78.69\%$) but poor precision ($40.21\%$), generating an unacceptable rate of false positives.
-- **Ensemble Robustness:** Constrained tree depth (`max_depth = 15`) and leaf regularization (`min_samples_leaf = 2`) effectively mitigated overfitting, evidenced by test metrics ($83.08\%$ accuracy, $0.8738$ ROC-AUC, $0.6170$ F1-score) closely matching 10-fold cross-validation estimates ($80.50\%$ accuracy, $0.8492$ ROC-AUC, $0.5599$ F1-score).
-- **Literature Benchmark Context:** Cortez et al. (2009) originally modeled wine quality as a continuous regression task on the 0 to 10 scale, evaluating support vector machines via Mean Absolute Deviation (MAD) and Regression Error Characteristic (REC) curves. Because this investigation reframes the task as an operational binary classification problem (quality score 7 or higher vs. 6 or lower), direct numerical comparison to the original regression error is not applicable; however, our Random Forest classifier establishes a high-performance enological classification benchmark, achieving a test ROC-AUC of $0.8738$ and a red wine subgroup ROC-AUC of $0.9307$.
-
-### Key Chemical Drivers
-Feature importance evaluations across both in-sample Gini impurity and out-of-sample permutation testing reveal three primary enological mechanisms:
-1. **Ethanol as the Primary Maturity Marker:** Alcohol content emerged as the single most critical predictor (causing a $0.2461$ drop in test F1-score under permutation). In the cool Atlantic climate of the Vinho Verde region, achieving higher natural alcohol ($> 11.0\%$ ABV) signifies prolonged hang-time, optimal grape maturity, and concentrated flavor precursors without excess harsh acidity.
-2. **Structural Balance via Density and Chlorides:** Density ($+0.0768$ F1 drop) and chlorides ($+0.0796$ F1 drop) function as secondary structural constraints. Elevated chlorides impart an unpleasant saline or soapy character that sensory panels penalize severely, while density captures the ratio of residual extract to alcohol.
-3. **Microbial Cleanliness via Volatile Acidity and Sulphates:** Volatile acidity (acetic acid) acts as an acute negative indicator. High-quality wines consistently maintain low volatile acidity, supported by adequate free and total sulfur dioxide preservation.
-
-### Red vs. White Wine Performance
-Disaggregating model performance revealed distinct predictive dynamics:
-- **Red Wines ($90.18\%$ Accuracy, $0.9307$ ROC-AUC):** Red wines exhibited superior separability because defect markers (excess volatile acidity) and preservation markers (sulphates) provide sharp boundaries.
-- **White Wines ($80.61\%$ Accuracy, $0.8522$ ROC-AUC):** White wines present broader variation in residual sugar and acidity balance (ranging from dry to semi-sweet styles), creating greater overlap between quality classes.
-- Explicit wine type (`is_red`) demonstrated low permutation importance ($+0.0044$), confirming that once specific chemical concentrations are known, the categorical color designation offers minimal additional predictive utility.
-
-### Performance Limits
-Extensive diagnostic testing demonstrated that the model operates near the empirical performance ceiling of this dataset:
-- **Threshold Sensitivity:** Scanning decision thresholds from $0.30$ to $0.74$ demonstrated that the default $0.50$ cutoff ($F1 = 0.6170$) is within $0.0025$ of the empirical maximum ($F1 = 0.6195$ at threshold $0.52$).
-- **Interaction Ratios:** Testing domain-engineered chemical interaction ratios (such as free-to-total SO2 ratio, total acidity, and alcohol-to-density ratio) did not improve cross-validation performance ($F1 = 0.5587$ vs. $0.5599$ baseline), confirming that tree-based algorithms natively partition non-linear interactions without redundant synthetic features.
-- **Sensory Noise:** The remaining test classification error ($16.92\%$) likely reflects a combination of subtle non-linear chemical dynamics and inherent sensory noise from human expert evaluation (which relies on subjective palate ratings across multi-taster panels), rather than simple algorithmic underfitting.
-
-### Practical Recommendations
-For commercial wine producers, distributors, and quality assurance laboratories, we recommend a three-tiered operational deployment:
-1. **Tier 1 (Automated Pre-Screening):** Run laboratory chemical measurements through the model immediately post-fermentation to triage production batches into standard table wine vs. potential reserve quality.
-2. **Tier 2 (Risk-Adjusted Decision Thresholds):** Calibrate the operating threshold to match commercial objectives: use a high-precision threshold ($\ge 0.70$) for premium reserve bottling to protect brand reputation, and a high-recall threshold ($\le 0.40$) for bulk screening to capture high-potential lots.
-3. **Tier 3 (Targeted Expert Sensory Flights):** Reserve high-cost human sommelier panels specifically for lots flagged by the model as borderline or high-probability premium. Because only $25.19\%$ of test batches are flagged for premium evaluation under the default threshold ($268$ of $1,064$ wines), this triage protocol could theoretically reduce routine tasting volume by approximately $75\%$, allowing winemakers to focus palate evaluations where they add the greatest economic value.
