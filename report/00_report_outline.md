@@ -12,7 +12,7 @@ Owners follow the work split in the README. Intro and Conclusion are written tog
 - [x] 3. Exploratory Data Analysis (Person B), draft in `03_eda.md`
 - [x] 4. Model Selection (Anthony Candelas), draft in `04_model_selection.md`
 - [x] 5. Model Analysis (Anthony Candelas), draft in `05_model_analysis.md`
-- [ ] 6. Conclusion and Recommendations (everyone)
+- [x] 6. Conclusion and Recommendations (everyone), draft in `06_conclusion.md`
 - [ ] References
 - [ ] Appendix: notebook output
 - [ ] Final read-through so it sounds like one report
