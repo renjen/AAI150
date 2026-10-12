@@ -11,6 +11,9 @@ We're predicting if a wine is good (quality 7 or higher) or not good based on it
   - `wine_clean.csv` is the full cleaned data, use this for EDA
   - `train.csv` and `test.csv` are the 80/20 split, use these for the models
 - `notebooks/01_data_cleaning.ipynb` is the cleaning notebook (Person A)
+- `notebooks/02_eda.ipynb` is the exploratory data analysis (Person B)
+- `notebooks/03_modeling.ipynb` is model selection and analysis (Person C)
+- `report/` has the report sections (`01_` to `07_`) and `build_report.py`, which combines them into `report/Final-Project-Report.md` (`python report/build_report.py`) or a final PDF with the notebooks as the appendix (`python report/build_report.py --pdf`)
 - `requirements.txt` has the packages we need
 
 ## Setup

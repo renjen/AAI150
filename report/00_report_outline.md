@@ -6,18 +6,18 @@ Owners follow the work split in the README. Intro and Conclusion are written tog
 
 ## Checklist
 
-- [ ] Title page
-- [ ] 1. Introduction (everyone)
+- [x] Title page (fill in team number, Person B's name, and instructor in `build_report.py`)
+- [x] 1. Introduction (everyone), draft in `01_introduction.md`
 - [x] 2. Data Cleaning/Preparation (Person A), draft in `02_data_cleaning.md`
 - [x] 3. Exploratory Data Analysis (Person B), draft in `03_eda.md`
 - [x] 4. Model Selection (Anthony Candelas), draft in `04_model_selection.md`
 - [x] 5. Model Analysis (Anthony Candelas), draft in `05_model_analysis.md`
 - [x] 6. Conclusion and Recommendations (everyone), draft in `06_conclusion.md`
-- [ ] References
-- [ ] Appendix: notebook output
+- [x] References, in `07_references.md`
+- [x] Appendix: notebook output (added automatically by `build_report.py`)
 - [ ] Final read-through so it sounds like one report
 - [ ] Turnitin / Draft Coach check
-- [ ] Export to PDF and submit
+- [ ] Export to PDF (`python report/build_report.py --pdf`) and submit. Combined Markdown draft: `Final-Project-Report.md` (`python report/build_report.py`)
 
 ---
 
