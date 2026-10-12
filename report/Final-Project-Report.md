@@ -9,7 +9,7 @@ Anthony Candelas
 AAI 150  
 M.S. Applied Artificial Intelligence, University of San Diego  
 Instructor: Instructor Name  
-October 9, 2026
+October 12, 2026
 
 GitHub repository: https://github.com/renjen/AAI150
 
@@ -148,7 +148,7 @@ Figure 1 shows the original quality scores. Most wines received a 5 (1,752 wines
 
 **Figure 1.** Distribution of quality scores. Scores of 7 and above are labeled good.
 
-The imbalance means a model that always predicts "not good" would be 81% accurate while being useless. This confirms that accuracy should not be the main metric for comparing models.
+The class imbalance means that a model predicting every wine as "not good" would achieve about 81% accuracy but would fail to identify any good wines. Therefore, accuracy alone is not enough to evaluate our models.
 
 ## Feature Distributions
 
@@ -160,7 +160,7 @@ Total sulfur dioxide has a skewness close to zero (0.06), but its histogram has 
 
 **Figure 2.** Histograms of the 11 chemical features.
 
-Skewed features with very different scales can cause problems for models that rely on distances or linear combinations of the inputs, such as logistic regression. For these models we standardize the features. Tree-based models split on one feature at a time and are not affected by skew or scale.
+Features with different scales can cause problems for models such as logistic regression, so we standardize the features for these models. Tree-based models do not require standardization. They split on one feature at a time and depend only on the order of the values, so skew does not affect them.
 
 ## Red vs. White Wines
 
@@ -221,9 +221,9 @@ All of these relationships are associations. They do not show that changing a fe
 
 ## Key Takeaways for Modeling
 
-1. **Class imbalance.** Only 19% of wines are good. Models should be trained with class weights and judged on precision, recall, F1, ROC-AUC, and PR-AUC rather than accuracy.
+1. **Class imbalance.** Only 19% of wines are good. Models should be evaluated using precision, recall, F1, ROC-AUC, and PR-AUC rather than accuracy alone. The models should also be trained with class weights, so that mistakes on good wines count more.
 2. **Most useful features.** Alcohol is the strongest single predictor, followed by density, chlorides, and volatile acidity. No single feature separates the classes well, so a model that combines features is needed.
-3. **Skew and scale.** Most features are right-skewed and on very different scales, so logistic regression needs standardized inputs. Tree-based models do not.
+3. **Skew and scale.** Most features are right-skewed and measured on different scales, so logistic regression benefits from standardized inputs. Tree-based models do not require standardization and are not affected by skew.
 4. **Multicollinearity.** Free and total sulfur dioxide, and density, alcohol, and residual sugar, are correlated. This matters most when interpreting linear model coefficients.
 5. **Wine type.** Red and white wines have very different chemistry, so `is_red` is kept as an input.
 
