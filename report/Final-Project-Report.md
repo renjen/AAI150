@@ -160,7 +160,7 @@ Total sulfur dioxide has a skewness close to zero (0.06), but its histogram has 
 
 **Figure 2.** Histograms of the 11 chemical features.
 
-Features with different scales can cause problems for models such as logistic regression, so we standardize the features for these models. Tree-based models generally do not require standardization, although skewed distributions and outliers can still affect their performance.
+Features with different scales can cause problems for models such as logistic regression, so we standardize the features for these models. Tree-based models do not require standardization. They split on one feature at a time and depend only on the order of the values, so skew does not affect them.
 
 ## Red vs. White Wines
 
@@ -221,9 +221,9 @@ All of these relationships are associations. They do not show that changing a fe
 
 ## Key Takeaways for Modeling
 
-1. **Class imbalance.** Only 19% of wines are good. Models should be evaluated using precision, recall, F1, ROC-AUC, and PR-AUC rather than accuracy alone. We can also consider class weights to help address the class imbalance.
+1. **Class imbalance.** Only 19% of wines are good. Models should be evaluated using precision, recall, F1, ROC-AUC, and PR-AUC rather than accuracy alone. The models should also be trained with class weights, so that mistakes on good wines count more.
 2. **Most useful features.** Alcohol is the strongest single predictor, followed by density, chlorides, and volatile acidity. No single feature separates the classes well, so a model that combines features is needed.
-3. **Skew and scale.** Most features are right-skewed and measured on different scales, so logistic regression benefits from standardized inputs. Tree-based models generally do not require standardization, although skewed distributions and outliers can still affect their performance.
+3. **Skew and scale.** Most features are right-skewed and measured on different scales, so logistic regression benefits from standardized inputs. Tree-based models do not require standardization and are not affected by skew.
 4. **Multicollinearity.** Free and total sulfur dioxide, and density, alcohol, and residual sugar, are correlated. This matters most when interpreting linear model coefficients.
 5. **Wine type.** Red and white wines have very different chemistry, so `is_red` is kept as an input.
 
