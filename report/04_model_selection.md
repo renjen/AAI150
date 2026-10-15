@@ -1,66 +1,66 @@
 # Model Selection
 
-In this phase, we built and evaluated machine learning classifiers to predict whether a wine is high quality based on its 11 physicochemical measurements and wine type. Following the definition from data cleaning, a wine is good (`is_good = 1`) if its sensory evaluation score is 7 or higher, and ordinary (`is_good = 0`) if its score is 6 or lower.
+In this phase, we built and tested classifiers to predict whether a wine is good based on its chemical properties and wine type. As defined during data cleaning, a wine is good (`is_good = 1`) if its expert score is 7 or higher, and ordinary (`is_good = 0`) if its score is 6 or lower.
 
-The feature set includes 12 variables:
-- 11 continuous chemical features: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, and alcohol.
+The feature set has 12 inputs:
+- 11 continuous chemical measurements: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, and alcohol.
 - 1 binary indicator: `is_red` (1 for red wine, 0 for white wine).
 
-To prevent target leakage, the original continuous `quality` score and the text `type` column were dropped before modeling.
+To avoid data leakage, the original `quality` score and the text `type` column were dropped before modeling.
 
 ---
 
 ## Preprocessing and Prevention of Data Leakage
 
-Data leakage happens when information from outside a training fold is used to transform features or select parameters. To prevent leakage:
+Data leakage happens when information from outside the training fold is used during preprocessing or tuning. To prevent leakage:
 
-1. **Strict Partitioning:** The 80/20 stratified split from data cleaning was strictly preserved. All model exploration, scaling, parameter estimation, and cross-validation were conducted exclusively on `train.csv` (N = 4,256). The test partition (`test.csv`, N = 1,064) remained completely untouched until the final evaluation.
-2. **Encapsulated Preprocessing Pipelines:** For distance-sensitive algorithms requiring feature normalization (specifically Logistic Regression), standard z-score normalization (`StandardScaler`) was encapsulated within a scikit-learn `Pipeline`. During 10-fold cross-validation, the scaler was fit solely on the 9 training folds in each split and then applied to transform the held-out validation fold. Tree-based models (Random Forest and Gradient Boosting) do not require feature scaling, so they operate directly on the raw chemical values.
+1. **Strict Partitioning:** We kept the 80/20 stratified split created during data cleaning. All model building, scaling, tuning, and cross-validation were conducted strictly on the training set (`train.csv`, 4,256 wines). The test set (`test.csv`, 1,064 wines) was set aside and left completely untouched until the final evaluation.
+2. **Feature Scaling in Pipelines:** Logistic regression is sensitive to the scale of its inputs, so we standardized features using `StandardScaler` inside a scikit-learn `Pipeline`. During cross-validation, the scaler was fit only on the 9 training folds in each iteration and then applied to the held-out validation fold. This ensures that no validation data leaks into the scaling step. Tree-based models (Random Forest and Gradient Boosting) split on one feature at a time and do not require scaling, so they run directly on the raw chemical measurements.
 
 ---
 
 ## Handling Class Imbalance
 
-As documented in data cleaning, the target distribution is notably imbalanced:
-- Ordinary Wines (`is_good = 0`): 81.04% of training observations (3,449 samples).
-- High-Quality Wines (`is_good = 1`): 18.96% of training observations (807 samples).
+As found in data cleaning, our target is imbalanced:
+- Ordinary wines (`is_good = 0`): 81.04% of the training data (3,449 wines).
+- Good wines (`is_good = 1`): 18.96% of the training data (807 wines).
 
-A baseline classifier that always predicts the majority class would achieve 81.04% accuracy while failing completely to detect a single high-quality wine. To address this without distorting the data with synthetic oversampling:
+A simple baseline model that predicts "ordinary" for every wine would achieve 81.04% accuracy while catching zero good wines. To handle this imbalance without distorting the data with synthetic oversampling:
 
-1. **Stratified Partitioning:** A 10-fold Stratified K-Fold cross-validation scheme (`StratifiedKFold(n_splits=10, shuffle=True, random_state=42)`) was used for all model comparisons. This guarantees that each validation fold contains the exact 18.96% positive class proportion.
-2. **Cost-Sensitive Weighting:** All candidate models incorporated cost-sensitive loss weighting (`class_weight='balanced'`). The loss associated with misclassifying a minority-class observation was scaled inversely to class frequency according to:
+1. **Stratified Cross-Validation:** We used 10-fold Stratified K-Fold (`StratifiedKFold(n_splits=10, shuffle=True, random_state=42)`), which guarantees that each fold keeps the same 18.96% share of good wines.
+2. **Balanced Class Weights:** All models used balanced class weighting (`class_weight='balanced'`). This scales the misclassification loss inversely to class frequency:
 
 $$w_j = \frac{N}{2 \times N_j}$$
 
-where $N$ is the total number of training samples and $N_j$ is the count of samples in class $j$. This assigns a weight of approximately 2.64 to high-quality wines and 0.62 to ordinary wines, penalizing false negatives and compelling the algorithms to balance precision and recall.
+where $N$ is the total number of training samples and $N_j$ is the count of samples in class $j$. This assigns a weight of about 2.64 to good wines and 0.62 to ordinary wines, penalizing false negatives and encouraging the models to balance precision and recall.
 
 ---
 
 ## Evaluation Metrics
 
-Because the classes are imbalanced, classification accuracy is uninformative. We evaluate each model using five metrics:
+Because the classes are imbalanced, accuracy is misleading. We evaluate each model using five metrics:
 
-1. **Precision:** $\frac{TP}{TP + FP}$. The share of predicted high-quality wines that are truly high quality. High precision protects brand reputation by preventing ordinary wines from being bottled as premium reserves.
-2. **Recall (Sensitivity):** $\frac{TP}{TP + FN}$. The share of actual high-quality wines successfully identified by the model. High recall minimizes lost revenue by preventing premium wines from being sold as table wine.
-3. **F1-Score:** The harmonic mean of precision and recall ($2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$). F1-score serves as our primary selection metric because it balances precision and recall without sacrificing either one.
-4. **ROC-AUC:** Area Under the Receiver Operating Characteristic curve. Measures overall ranking and discrimination across all classification thresholds, independent of class prevalence.
-5. **PR-AUC (Average Precision):** Area Under the Precision-Recall curve. Focuses specifically on the minority class trade-off across all thresholds, evaluated against the 0.1896 random baseline.
+1. **Precision:** $\frac{TP}{TP + FP}$. The share of wines predicted as good that actually are good. High precision protects brand reputation by keeping ordinary wine out of reserve bottles.
+2. **Recall (Sensitivity):** $\frac{TP}{TP + FN}$. The share of actual good wines that the model finds. High recall minimizes lost revenue by preventing premium wine from being sold as bulk table wine.
+3. **F1-Score:** The harmonic mean of precision and recall ($2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$). F1-score is our primary selection metric because it rewards models that balance precision and recall.
+4. **ROC-AUC:** Area Under the Receiver Operating Characteristic curve. Measures how well the model ranks wines across all possible probability thresholds, regardless of class balance.
+5. **PR-AUC (Average Precision):** Area Under the Precision-Recall curve. Focuses on the trade-off for the minority class across all thresholds, compared against the 0.1896 baseline of random guessing.
 
 ---
 
 ## Candidate Models
 
-We benchmarked three model families to find the best balance of predictive power, resistance to overfitting, and interpretability:
+We tested three model families to find the best balance of accuracy, resistance to overfitting, and interpretability:
 
-1. **Logistic Regression (Parametric Baseline):**
-   - *Rationale:* A linear reference baseline. It models log-odds as a linear combination of normalized inputs with $L_2$ ridge regularization ($C = 1.0$) and balanced class weights.
-   - *Limitations:* Assumes linear decision boundaries and cannot capture non-linear chemical interactions (such as synergies between alcohol, sugar, and volatile acidity) without manual interaction terms.
-2. **Random Forest Classifier (Ensemble Bagging: Primary Model):**
-   - *Rationale:* An ensemble of 300 decorrelated decision trees built on bootstrap samples with random feature subsampling. Random forest handles skewed chemical distributions, resists outliers, captures non-linear interactions, and mitigates single-tree variance through bagging.
+1. **Logistic Regression (Baseline):**
+   - *Why chosen:* A simple, transparent linear baseline. It models log-odds as a linear combination of normalized inputs using $L_2$ regularization ($C = 1.0$) and balanced class weights.
+   - *Limitations:* Assumes linear decision boundaries and cannot capture non-linear chemical interactions (such as synergies between alcohol, sugar, and acidity) without manually created interaction terms.
+2. **Random Forest (Final Model):**
+   - *Why chosen:* An ensemble of 300 decision trees trained on bootstrap samples with random feature subsets. Random forest handles skewed features, resists outliers, captures non-linear interactions, and averages across trees to reduce variance.
    - *Regularization:* Constrained to a maximum tree depth of 15, minimum split size of 4, and minimum leaf size of 2 to prevent memorizing noise in expert ratings.
-3. **Histogram-Based Gradient Boosting (Ensemble Boosting: Comparative Model):**
-   - *Rationale:* An iterative sequential boosting model that bins continuous features into 256 integer histograms, optimizing logistic loss through gradient descent.
-   - *Configuration:* Evaluated with 200 boosting iterations, a learning rate of 0.08, maximum tree depth of 6, and balanced sample weighting.
+3. **Histogram-Based Gradient Boosting (Comparison):**
+   - *Why chosen:* A sequential boosting model that bins continuous features into 256 integer bins, building trees one after another to correct errors from earlier trees.
+   - *Settings:* Evaluated with 200 boosting iterations, a learning rate of 0.08, maximum tree depth of 6, and balanced sample weighting.
 
 ---
 
@@ -83,9 +83,9 @@ Figure 7 illustrates the comparative performance across all six validation metri
 ![Figure 7: 10-Fold Stratified Cross-Validation Benchmark](figures/figure_01_model_cv_comparison.png)
 
 ### Key Performance Insights:
-- **Baseline Trade-off:** Logistic Regression achieved high recall (78.69%) but low precision (40.21%), generating excessive false positive classifications. Its overall F1-score (0.5316) was the lowest among candidate models.
-- **Ensemble Superiority:** Random Forest achieved the highest F1-score (0.5599), ROC-AUC (0.8492), PR-AUC (0.5747), and overall accuracy (80.50%). Its precision (49.08%) exceeded the baseline by nearly 9 percentage points.
-- **Boosting Comparison:** HistGradientBoosting performed competitively (F1 = 0.5473, ROC-AUC = 0.8386) but did not surpass Random Forest in any key metric.
+- **Baseline Trade-off:** Logistic regression caught a high share of good wines (recall 78.69%), but had low precision (40.21%), generating too many false alarms. Its overall F1-score (0.5316) was the lowest among candidate models.
+- **Ensemble Superiority:** Random forest achieved the highest F1-score (0.5599), ROC-AUC (0.8492), PR-AUC (0.5747), and overall accuracy (80.50%). Its precision (49.08%) was nearly 9 percentage points higher than logistic regression.
+- **Boosting Comparison:** HistGradientBoosting was close (F1 = 0.5473, ROC-AUC = 0.8386), but did not surpass Random Forest on any primary metric.
 
 ---
 
@@ -135,4 +135,4 @@ Based on cross-validation results, statistical hypothesis testing, and hyperpara
 3. Inherent invariance to monotonic transformations and outliers.
 4. Reliable rank-order discrimination suitable for decision threshold tuning.
 
-Section 5 presents the out-of-sample evaluation and diagnostic analysis of this model on the held-out test set.
+The Model Analysis section presents the out-of-sample evaluation and diagnostic analysis of this model on the held-out test set.
