@@ -220,12 +220,12 @@ def create_slide_11_visual():
     ax.text(1.85, 3.1, "Vinho Verde, Portugal", ha='center', va='center', fontsize=10, fontweight='semibold', color='#475569')
     
     text1 = ("• Cool, Atlantic maritime climate\n"
-             "• High natural acidity & low alcohol\n"
-             "• Distinctive carbonation profile\n\n"
-             "Warning: Do not apply to warm-climate "
-             "regions (Napa, Rioja, Barossa) without "
-             "retraining on local harvest data.")
-    ax.text(1.85, 1.8, text1, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.35, wrap=True)
+             "• High natural acid, low alcohol\n"
+             "• Distinctive regional profile\n\n"
+             "Warning: Do not apply to\n"
+             "warm regions (Napa, Rioja)\n"
+             "without local retraining.")
+    ax.text(1.85, 1.8, text1, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.4)
 
     # Card 2: Subjective Palates
     c2 = patches.FancyBboxPatch((3.65, 0.6), 2.7, 3.4, boxstyle="round,pad=0.1,rounding_size=0.15", ec="#f59e0b", fc="#f8fafc", lw=2)
@@ -233,31 +233,31 @@ def create_slide_11_visual():
     ax.text(5.0, 3.5, "2. Human Palates", ha='center', va='center', fontsize=13, fontweight='bold', color='#d97706')
     ax.text(5.0, 3.1, "Expert Rating Variance", ha='center', va='center', fontsize=10, fontweight='semibold', color='#475569')
     
-    text2 = ("• Ratings based on median of 3 judges\n"
-             "• Taster palate fatigue & flight order\n"
-             "• Subjective differences on style\n\n"
-             "Result: Inherent label noise exists right "
-             "along the border between quality score 6 "
-             "(ordinary) and score 7 (good).")
-    ax.text(5.0, 1.8, text2, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.35, wrap=True)
+    text2 = ("• Median score of 3 judges\n"
+             "• Palate fatigue and order bias\n"
+             "• Subjective style preferences\n\n"
+             "Result: Inherent label noise\n"
+             "along the border between\n"
+             "score 6 and score 7.")
+    ax.text(5.0, 1.8, text2, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.4)
 
     # Card 3: Operational Trade-off
     c3 = patches.FancyBboxPatch((6.8, 0.6), 2.7, 3.4, boxstyle="round,pad=0.1,rounding_size=0.15", ec="#ef4444", fc="#f8fafc", lw=2)
     ax.add_patch(c3)
     ax.text(8.15, 3.5, "3. Missed Bottles", ha='center', va='center', fontsize=13, fontweight='bold', color='#dc2626')
-    ax.text(8.15, 3.1, "The 28% False-Negative Rate", ha='center', va='center', fontsize=10, fontweight='semibold', color='#475569')
+    ax.text(8.15, 3.1, "The 28% Miss Rate", ha='center', va='center', fontsize=10, fontweight='semibold', color='#475569')
     
     text3 = ("• Cuts tasting flights by ~75%\n"
-             "• But misses 57 out of 202 good wines\n"
+             "• Misses 57 of 202 good wines\n"
              "• Missed wines become table wine\n\n"
-             "Solution: Wineries that cannot risk missing "
-             "premium wine must dial down the decision "
-             "threshold to catch more good bottles.")
-    ax.text(8.15, 1.8, text3, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.35, wrap=True)
+             "Solution: Wineries can dial\n"
+             "down cutoff threshold to\n"
+             "catch more good bottles.")
+    ax.text(8.15, 1.8, text3, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.4)
 
     plt.tight_layout()
     plt.savefig("/Users/bloodsailadmiralamunra/Documents/GitHub/AAI150/presentation_assets/slide_11_limitations_cards.png")
-    plt.savefig("/Users/bloodsailadmiralamunra/Documents/GitHub/MAAI-USD-ASC/Final/presentation_assets/slide_11_limitations_cards.png")
+    plt.savefig("/Users/bloodsailadmiralamunra/.gemini/antigravity/brain/f454c265-efe2-4773-bad4-b99fadf8bef6/slide_11_limitations_cards.png")
     plt.close()
     print("Slide 11 visual created.")
 

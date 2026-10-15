@@ -443,18 +443,18 @@
             </div>
 
             <!-- Bullet Points on Slide -->
-            <div class="space-y-1.5 text-xs bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+            <div class="space-y-2 text-xs bg-slate-950/60 p-3 rounded-xl border border-slate-800">
               <div class="flex items-start gap-2">
                 <span class="text-sky-400 font-bold">•</span>
-                <span class="text-slate-200"><strong>Compared 3 approaches:</strong> Logistic Regression (baseline), Random Forest, and Gradient Boosting.</span>
+                <span class="text-slate-200"><strong>Compared 3 approaches:</strong> Tested three different computer prediction methods to find the strongest performer.</span>
               </div>
               <div class="flex items-start gap-2">
                 <span class="text-sky-400 font-bold">•</span>
-                <span class="text-slate-200"><strong>Rigorous testing:</strong> 10-fold cross-validation + held-out vault of 1,064 unseen test wines.</span>
+                <span class="text-slate-200"><strong>Tested on 1,064 unseen wines:</strong> Evaluated on brand-new bottles the model had never seen before.</span>
               </div>
               <div class="flex items-start gap-2">
                 <span class="text-sky-400 font-bold">•</span>
-                <span class="text-slate-200"><strong>The Winner: Random Forest</strong> — significantly outperformed baseline (p = 0.045) and captured non-linear interactions.</span>
+                <span class="text-slate-200"><strong>The Winner: A "Random Forest"</strong> = 300 decision rules that vote together like an expert panel.</span>
               </div>
             </div>
             <div class="text-[11px] text-slate-500 italic">Visual: Simple tree & voting diagram (slide_07_model_trees.png)</div>
@@ -462,11 +462,11 @@
         `,
         script: `
           <p>"Thanks, Aren. Once we understood the chemistry, our challenge was: can a computer actually learn these patterns to separate great wines from ordinary ones?"</p>
-          <p>"To find out, we compared three machine learning approaches using 10-fold cross-validation, and locked away a test set of 1,064 wines that the computer never saw during training."</p>
-          <p>"Our clear winner was a <strong>Random Forest</strong>. You can think of a Random Forest like a tasting committee of 300 independent judges. Each tree looks at a random subset of lab numbers, makes a decision, and then they all cast a vote. If the majority votes 'good,' the wine gets flagged."</p>
-          <p>"This committee approach prevents any single quirky lab test or outlier from throwing off the final verdict."</p>
+          <p>"To find out, we tested three different computer methods on 1,064 wines the system had never seen before—giving us an honest check of real-world accuracy."</p>
+          <p>"Our clear winner was an approach called a <strong>Random Forest</strong>. Think of it like a panel of 300 independent wine judges on a computer. Each tree looks at a different combination of lab numbers, makes a decision, and then they all cast a vote. If the majority votes 'good,' the wine gets flagged for human tasting."</p>
+          <p>"Having 300 independent rules vote together prevents any single weird lab reading from throwing off the final verdict."</p>
         `,
-        tips: "💡 <strong>Delivery Coaching for Anthony:</strong> Use the 'committee of 300 judges' analogy. It immediately demystifies machine learning for general audiences."
+        tips: "💡 <strong>Delivery Coaching for Anthony:</strong> Use the 'panel of 300 judges' analogy. It immediately clicks for winery executives and business leaders."
       },
       {
         id: 8,
