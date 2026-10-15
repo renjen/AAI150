@@ -200,63 +200,78 @@ def create_slide_09_visual():
 # SLIDE 11: Limitations (3 Key Operational Reality Pillars)
 # -------------------------------------------------------------
 def create_slide_11_visual():
-    fig, ax = plt.subplots(figsize=(10, 5.2), dpi=300)
-    fig.patch.set_facecolor('#ffffff')
-    ax.set_facecolor('#ffffff')
-    ax.set_xlim(0, 10)
-    ax.set_ylim(0, 5.2)
-    ax.axis('off')
+    fig, ax = plt.subplots(figsize=(11, 5.8), dpi=300)
+    fig.patch.set_facecolor("#ffffff")
+    ax.set_facecolor("#ffffff")
+    ax.set_xlim(0, 11)
+    ax.set_ylim(0, 5.8)
+    ax.axis("off")
 
-    # Title
-    ax.text(5, 4.8, "Key Limitations & Operational Realities", 
-            ha='center', va='center', fontsize=16, fontweight='bold', color='#1e293b')
-    ax.text(5, 4.4, "What every winery manager must consider before deploying the model", 
-            ha='center', va='center', fontsize=11, color='#64748b')
+    # Title & Subtitle
+    ax.text(5.5, 5.35, "Key Limitations & Operational Realities", 
+            ha="center", va="center", fontsize=17, fontweight="bold", color="#0f172a")
+    ax.text(5.5, 4.95, "Three essential operational factors every winery manager should know", 
+            ha="center", va="center", fontsize=11, color="#64748b")
 
-    # Card 1: One Region Only
-    c1 = patches.FancyBboxPatch((0.5, 0.6), 2.7, 3.4, boxstyle="round,pad=0.1,rounding_size=0.15", ec="#3b82f6", fc="#f8fafc", lw=2)
-    ax.add_patch(c1)
-    ax.text(1.85, 3.5, "1. Geography", ha='center', va='center', fontsize=13, fontweight='bold', color='#1d4ed8')
-    ax.text(1.85, 3.1, "Vinho Verde, Portugal", ha='center', va='center', fontsize=10, fontweight='semibold', color='#475569')
-    
-    text1 = ("• Cool, Atlantic maritime climate\n"
-             "• High natural acid, low alcohol\n"
-             "• Distinctive regional profile\n\n"
-             "Warning: Do not apply to\n"
-             "warm regions (Napa, Rioja)\n"
-             "without local retraining.")
-    ax.text(1.85, 1.8, text1, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.4)
+    cards_data = [
+        {
+            "x": 0.5, "ec": "#3b82f6", "hdr": "1. Geography", "hdr_c": "#1d4ed8",
+            "sub": "Vinho Verde, Portugal",
+            "bullets": [
+                "• Cool Atlantic maritime climate",
+                "• Naturally high acid & low alcohol",
+                "• Region-specific grape varieties"
+            ],
+            "note_lbl": "Takeaway:",
+            "note_txt": "Must retrain on local fruit before\napplying to California or Australia."
+        },
+        {
+            "x": 3.9, "ec": "#f59e0b", "hdr": "2. Human Palates", "hdr_c": "#d97706",
+            "sub": "Expert Rating Variance",
+            "bullets": [
+                "• Median score of 3 professional judges",
+                "• Palate fatigue across long flights",
+                "• Subjective differences on wine style"
+            ],
+            "note_lbl": "Takeaway:",
+            "note_txt": "Natural sensory disagreement exists\non borderline bottles (grade 6 vs 7)."
+        },
+        {
+            "x": 7.3, "ec": "#ef4444", "hdr": "3. Missed Bottles", "hdr_c": "#dc2626",
+            "sub": "The 28% Miss Rate",
+            "bullets": [
+                "• Cuts tasting labor by ~75%",
+                "• Misses 57 out of 202 good wines",
+                "• Missed batches become table wine"
+            ],
+            "note_lbl": "Takeaway:",
+            "note_txt": "The cutoff threshold is a dial: adjust\nit down to catch more good wine."
+        }
+    ]
 
-    # Card 2: Subjective Palates
-    c2 = patches.FancyBboxPatch((3.65, 0.6), 2.7, 3.4, boxstyle="round,pad=0.1,rounding_size=0.15", ec="#f59e0b", fc="#f8fafc", lw=2)
-    ax.add_patch(c2)
-    ax.text(5.0, 3.5, "2. Human Palates", ha='center', va='center', fontsize=13, fontweight='bold', color='#d97706')
-    ax.text(5.0, 3.1, "Expert Rating Variance", ha='center', va='center', fontsize=10, fontweight='semibold', color='#475569')
-    
-    text2 = ("• Median score of 3 judges\n"
-             "• Palate fatigue and order bias\n"
-             "• Subjective style preferences\n\n"
-             "Result: Inherent label noise\n"
-             "along the border between\n"
-             "score 6 and score 7.")
-    ax.text(5.0, 1.8, text2, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.4)
-
-    # Card 3: Operational Trade-off
-    c3 = patches.FancyBboxPatch((6.8, 0.6), 2.7, 3.4, boxstyle="round,pad=0.1,rounding_size=0.15", ec="#ef4444", fc="#f8fafc", lw=2)
-    ax.add_patch(c3)
-    ax.text(8.15, 3.5, "3. Missed Bottles", ha='center', va='center', fontsize=13, fontweight='bold', color='#dc2626')
-    ax.text(8.15, 3.1, "The 28% Miss Rate", ha='center', va='center', fontsize=10, fontweight='semibold', color='#475569')
-    
-    text3 = ("• Cuts tasting flights by ~75%\n"
-             "• Misses 57 of 202 good wines\n"
-             "• Missed wines become table wine\n\n"
-             "Solution: Wineries can dial\n"
-             "down cutoff threshold to\n"
-             "catch more good bottles.")
-    ax.text(8.15, 1.8, text3, ha='center', va='center', fontsize=9, color='#334155', linespacing=1.4)
+    for cd in cards_data:
+        x = cd["x"]
+        card = patches.FancyBboxPatch((x, 0.4), 3.2, 4.25, boxstyle="round,pad=0.08,rounding_size=0.15", 
+                                      ec=cd["ec"], fc="#f8fafc", lw=2)
+        ax.add_patch(card)
+        
+        ax.text(x + 1.6, 4.3, cd["hdr"], ha="center", va="center", fontsize=14, fontweight="bold", color=cd["hdr_c"])
+        ax.text(x + 1.6, 3.95, cd["sub"], ha="center", va="center", fontsize=10.5, fontweight="semibold", color="#475569")
+        ax.plot([x + 0.3, x + 2.9], [3.7, 3.7], color="#e2e8f0", lw=1.2)
+        
+        y_b = 3.3
+        for b in cd["bullets"]:
+            ax.text(x + 0.25, y_b, b, ha="left", va="center", fontsize=9.5, color="#1e293b")
+            y_b -= 0.42
+            
+        note_box = patches.FancyBboxPatch((x + 0.2, 0.65), 2.8, 1.25, boxstyle="round,pad=0.05,rounding_size=0.1",
+                                          ec=cd["ec"], fc="#ffffff", lw=1, ls="--")
+        ax.add_patch(note_box)
+        ax.text(x + 1.6, 1.65, cd["note_lbl"], ha="center", va="center", fontsize=9, fontweight="bold", color=cd["hdr_c"])
+        ax.text(x + 1.6, 1.15, cd["note_txt"], ha="center", va="center", fontsize=8.5, color="#334155", linespacing=1.35)
 
     plt.tight_layout()
-    plt.savefig("/Users/bloodsailadmiralamunra/Documents/GitHub/AAI150/presentation_assets/slide_11_limitations_cards.png")
+    plt.savefig("presentation_assets/slide_11_limitations_cards.png")
     plt.savefig("/Users/bloodsailadmiralamunra/.gemini/antigravity/brain/f454c265-efe2-4773-bad4-b99fadf8bef6/slide_11_limitations_cards.png")
     plt.close()
     print("Slide 11 visual created.")
